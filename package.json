@@ -1,0 +1,22 @@
+{
+  "name": "fcms-reference-interface",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.25.0",
+  "scripts": {
+    "dev": "node server/index.js",
+    "start": "node server/index.js",
+    "migrate": "node server/migrate.js",
+    "geo:backfill": "node server/geo-backfill.js",
+    "test:otp": "node tests/otp-e2e.mjs",
+    "check": "node --check server/index.js && node --check server/api.js && node --check server/geo.js && node --check server/db.js && node --check server/rules.js && node --check server/migrate.js && node --check server/admin-auth.js && node --check server/admin-api.js && node --check public/admin/admin.js && node --check public/app.js && node --check public/ui.js && node --check public/data.js && node --check public/model.js && node --check public/login.js && node tests/rules.test.js && node tests/model.test.js && node tests/admin.test.js && node tests/geo.test.js"
+  },
+  "dependencies": {
+    "express": "4.21.2",
+    "firebase-admin": "13.6.0",
+    "mysql2": "3.11.5",
+    "serverless-http": "3.2.0",
+    "sql.js": "1.13.0"
+  }
+}

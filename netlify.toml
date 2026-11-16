@@ -1,0 +1,14 @@
+[build]
+  functions = "netlify/functions"
+  publish = "public"
+
+[functions]
+  node_bundler = "esbuild"
+
+[functions.api]
+  included_files = ["node_modules/sql.js/dist/sql-wasm.wasm"]
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://3000-iv848f3nfcdnwi81wx8uv-9d444530.sg2.manus.computer/api/:splat"
+  status = 200

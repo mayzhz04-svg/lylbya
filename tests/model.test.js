@@ -1,0 +1,65 @@
+import assert from 'node:assert/strict';
+import { createState, normalizeDigits, validateLogin, validateRegistration, addAccount, addRequest } from '../public/model.js';
+import { demo, banks } from '../public/data.js';
+import * as ui from '../public/ui.js';
+import { login } from '../public/login.js';
+import { readFileSync, existsSync } from 'node:fs';
+
+assert.equal(demo.iban.length, 25);
+assert.equal(normalizeDigits('٠٩١٢٠٠۰۰۰۰'), '0912000000');
+assert.equal(validateLogin({ national: demo.national, phone: demo.phone }), null);
+assert.equal(validateLogin({ national: '123', phone: demo.phone }).field, 'national');
+assert.equal((login().match(/<input /g) || []).length, 2);
+assert.ok(!login().includes('passport'));
+assert.ok(login().includes('href="#register"'));
+assert.equal(validateRegistration(demo), null);
+
+const state = createState();
+assert.ok(addAccount(state, 'lib', 'LY123').error);
+const { account } = addAccount(state, 'lib', demo.iban);
+assert.equal(state.accounts.length, 1);
+assert.ok(addAccount(state, 'lib', demo.iban).error);
+const values = { branch: 'فرع المصاية', type: 'بطاقة', amount: '500', purposes: ['السياحة الشخصية'], consent: true };
+assert.ok(addRequest(state, account.id, { ...values, consent: false }).error);
+const { request } = addRequest(state, account.id, values);
+assert.equal(request.amount, 500);
+assert.ok(ui.accountDetails(account, state).includes('#request/1'));
+assert.ok(ui.requestDetails(request, account, state).includes('500.00'));
+assert.ok(ui.dashboard(state).includes('3500.00'));
+assert.equal((ui.bankList().match(/class="bank-row"/g) || []).length, 20);
+assert.ok(ui.bankList([{ id: 'lib', ar: 'المصرف الإسلامي الليبي', en: 'Libyan Islamic Bank', logo: '/assets/banks/lib.png' }]).includes('/assets/banks/lib.png'));
+assert.ok(ui.accounts({ accounts: [{ id: '1', iban: demo.iban, bankAr: 'مصرف تجريبي', logo: '/assets/banks/lib.png', requestCount: 2 }], requests: [] }).includes('2 طلبات'));
+assert.ok(ui.dashboard({ requests: [], stats: { count: 3, reserved: 10, pending: 500, available: 3500 } }, { name: 'مستخدم تجريبي', phone: '0912••••••' }).includes('FC') === false);
+assert.ok(ui.requestForm({ id: '1' }, { branches: ['فرع المصاية'], types: ['بطاقة'], purposes: ['السياحة الشخصية'] }).includes('فرع المصاية'));
+for (const bank of banks) assert.ok(existsSync(`public/assets/banks/${bank.id}.png`), bank.id);
+
+const html = readFileSync('public/index.html', 'utf8');
+assert.ok(!html.includes('video-guide'));
+assert.ok(!/<video|reference-frame|reference-next/.test(html));
+assert.ok(html.includes('src="/app.js'));
+const app = readFileSync('public/app.js', 'utf8');
+assert.ok(!/localStorage|XMLHttpRequest/.test(app));
+assert.ok(/credentials: 'include'/.test(app));
+assert.ok(/sessionStorage/.test(app));
+assert.ok(/headers.Authorization = `Bearer \$\{sessionToken\}`/.test(app));
+assert.ok(!/sessionStorage\.setItem\('(national|phone|passport|iban)/.test(app));
+assert.ok(!/https?:\/\/[^'"]*\/api\//.test(app));
+const server = readFileSync('server/api.js', 'utf8');
+const sqlBlocks = server.match(/`[^`]*`/g) || [];
+assert.ok(sqlBlocks.length > 0);
+assert.ok(sqlBlocks.every(block => !/\$\{/.test(block) || !/\b(SELECT|INSERT|UPDATE|DELETE)\b/i.test(block)));
+assert.ok(!/['"]\s*(SELECT|INSERT|UPDATE|DELETE)[^'"]*\$\{/.test(server));
+assert.ok(!/console\.log\(.*(national|passport|phone|iban)/i.test(server));
+console.log('PASS: client model, server-driven list shapes, same-origin API calls, no identity values in logs, 20 authentic logos, no video/screenshot UI.');
+const read = file => readFileSync(file, 'utf8');
+
+// تسليم الرمز للزائر بعد موافقة الإدارة
+const client = read('public/app.js');
+const otpUi = read('public/ui.js');
+assert.ok(!/demo\.otp/.test(client), 'لا يُستخدم رمز ثابت في الواجهة');
+assert.match(otpUi, /function otp\(/, 'شاشة الرمز موجودة وتعرض حقل التأكيد');
+assert.ok(!otpUi.includes('otp-delivery'), 'لا توجد بطاقة زائدة تعرض الرمز');
+assert.ok(client.includes("api('/api/resend'"), 'زر إعادة الإرسال يطلب رمزًا جديدًا من الخادم');
+assert.match(client, /rememberDelivery\(\{ code: result\.code/, 'الزائر يستلم الرمز تلقائيًا بعد الموافقة');
+assert.ok(client.includes("sessionStorage.setItem('fcms_delivery'"), 'الرمز يبقى بعد إعادة التحميل داخل التبويب');
+assert.ok(client.includes("otpInput.value = delivery.code"), 'الحقل يُعبأ بالرمز الوارد تلقائيًا');

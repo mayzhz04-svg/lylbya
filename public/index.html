@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover,interactive-widget=resizes-content">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="منصة حجز العملة الأجنبية للأفراد، لإدارة التسجيلات والحسابات وطلبات الحجز.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="منصة حجز العملة الأجنبية للأفراد">
+  <meta property="og:description" content="حجز وإدارة طلبات العملة الأجنبية للأفراد بسهولة.">
+  <meta property="og:url" content="https://fcms.one/">
+  <meta property="og:site_name" content="FCMS">
+  <meta property="og:image" content="https://fcms.one/assets/og-preview-user.jpg?v=3">
+  <meta property="og:image:secure_url" content="https://fcms.one/assets/og-preview-user.jpg?v=3">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="منصة حجز العملة الأجنبية للأفراد">
+  <meta name="twitter:description" content="حجز وإدارة طلبات العملة الأجنبية للأفراد بسهولة.">
+  <meta name="twitter:image" content="https://fcms.one/assets/og-preview-user.jpg?v=3">
+  <title>منصة حجز العملة الأجنبية للأفراد</title>
+  <link rel="icon" href="/assets/bank-logo.png">
+  <link rel="stylesheet" href="/styles.css?v=db-ui-17">
+  <link rel="stylesheet" href="/login.css?v=db-ui-17">
+</head>
+<body class="login-mode">
+  <main id="scene" class="scene">
+    <section id="auth" class="auth-area" aria-label="التسجيل وتأكيد الهوية"></section>
+    <section id="workspace" class="workspace" hidden aria-label="منصة حجز العملة الأجنبية">
+      <header class="topbar">
+        <img class="header-logo" src="/assets/bank-logo.png" alt="مصرف ليبيا المركزي">
+        <nav aria-label="التنقل الرئيسي">
+          <a href="#dashboard" data-route="dashboard">الرئيسية</a>
+          <a href="#accounts" data-route="accounts">حساباتي</a>
+        </nav>
+        <button class="logout" type="button" data-action="logout">تسجيل الخروج <span aria-hidden="true">←</span></button>
+      </header>
+      <div id="page" class="page"></div>
+    </section>
+    <aside class="demo-notice" aria-label="تنبيه">منصة مستقلة — لا تستخدم بيانات حقيقية <button type="button" id="demo-fill">تعبئة الحقول</button></aside>
+    <div id="toast" class="toast" role="status" hidden></div>
+    <dialog id="terms-dialog">
+      <h2>الشروط والأحكام</h2>
+      <p>هذه منصة مستقلة لإدارة التسجيلات والحسابات والطلبات. تُحفظ البيانات في قاعدة بيانات المشروع ولا تُرسل إلى مصرف ليبيا المركزي أو أي مصرف آخر، ولا تجري أي عملية مصرفية حقيقية. لا تدخل رقمك الوطني أو جوازك الحقيقي.</p>
+      <button type="button" class="button dark" data-action="close-terms">إغلاق</button>
+    </dialog>
+  </main>
+  <script type="module" src="/app.js?v=db-ui-17"></script>
+</body>
+</html>

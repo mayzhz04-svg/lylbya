@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#6d68a4">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>إدارة المنصة — لوحة الإدارة</title>
+  <link rel="icon" href="/assets/bank-logo.png">
+  <link rel="stylesheet" href="/admin/admin.css?v=admin-ui-19">
+</head>
+<body>
+  <div id="admin-app" class="admin-app">
+    <aside id="admin-sidebar" class="admin-sidebar" aria-label="التنقل الإداري">
+      <div class="sidebar-brand">
+        <img src="/assets/bank-logo.png" alt="مصرف ليبيا المركزي">
+        <div>
+          <strong>إدارة المنصة</strong>
+            <span>لوحة إدارة خاصة</span>
+        </div>
+      </div>
+
+      <nav class="admin-nav" aria-label="صفحات الإدارة">
+        <a href="#overview" data-route="overview" class="admin-nav-link">
+          <span class="nav-icon" aria-hidden="true">⌂</span>
+          <span>نظرة عامة</span>
+        </a>
+        <a href="#users" data-route="users" class="admin-nav-link">
+          <span class="nav-icon" aria-hidden="true">♙</span>
+          <span>المستخدمون</span>
+        </a>
+        <a href="#accounts" data-route="accounts" class="admin-nav-link">
+          <span class="nav-icon" aria-hidden="true">▣</span>
+          <span>الحسابات</span>
+        </a>
+        <a href="#requests" data-route="requests" class="admin-nav-link">
+          <span class="nav-icon" aria-hidden="true">☷</span>
+          <span>الطلبات</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="demo-warning" role="note">
+          <span class="warning-mark" aria-hidden="true">!</span>
+          <span>نموذج غير رسمي — البيانات التجريبية محفوظة</span>
+        </div>
+        <button id="logout-button" class="sidebar-logout" type="button" hidden>
+          <span aria-hidden="true">↪</span>
+          <span>تسجيل الخروج</span>
+        </button>
+      </div>
+    </aside>
+
+    <div id="sidebar-scrim" class="sidebar-scrim" hidden></div>
+
+    <section class="admin-main" aria-label="مساحة لوحة الإدارة">
+      <header class="admin-topbar">
+        <div class="topbar-leading">
+          <button id="sidebar-toggle" class="icon-button mobile-only" type="button" aria-label="فتح القائمة" aria-expanded="false">
+            <span aria-hidden="true">☰</span>
+          </button>
+          <div>
+            <p id="page-kicker" class="page-kicker">لوحة الإدارة</p>
+            <h1 id="page-title" class="page-title">نظرة عامة</h1>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <span id="admin-identity" class="admin-identity" hidden></span>
+          <button id="notification-button" class="notification-button" type="button" hidden aria-label="لا توجد تسجيلات جديدة">
+            <span class="notification-symbol" aria-hidden="true">!</span>
+            <span id="notification-label">تسجيلات جديدة</span>
+            <strong id="notification-count">0</strong>
+          </button>
+          <button id="refresh-button" class="button button-light" type="button" hidden>
+            <span class="refresh-symbol" aria-hidden="true">↻</span>
+            <span>تحديث</span>
+          </button>
+        </div>
+      </header>
+
+      <main id="admin-content" class="admin-content" aria-live="polite">
+        <section id="initial-loading" class="state-card initial-state" aria-label="جارٍ التحميل">
+          <span class="spinner" aria-hidden="true"></span>
+          <strong>جارٍ التحقق من جلسة الإدارة</strong>
+          <p>لن تظهر بيانات المنصة قبل التحقق من الصلاحية.</p>
+        </section>
+
+        <section id="auth-view" class="auth-view" hidden aria-label="تسجيل دخول الإدارة">
+          <div class="auth-card">
+            <div class="auth-card-mark" aria-hidden="true">◈</div>
+            <p class="eyebrow">مساحة خاصة</p>
+            <h2 id="auth-title">الدخول إلى إدارة المنصة</h2>
+            <p id="auth-description" class="auth-description">أدخل بيانات مدير المنصة للوصول إلى التسجيلات والطلبات.</p>
+            <div id="setup-notice" class="setup-notice" hidden>
+              <span class="notice-icon" aria-hidden="true">!</span>
+              <p>يلزم إعداد بيانات الدخول قبل فتح لوحة الإدارة.</p>
+            </div>
+            <div id="callback-error" class="inline-error" hidden role="alert"></div>
+            <form id="admin-login-form" class="admin-login-form" novalidate>
+              <label for="admin-username">اسم المستخدم</label>
+              <input id="admin-username" name="username" type="text" autocomplete="username" required>
+              <label for="admin-password">كلمة المرور</label>
+              <input id="admin-password" name="password" type="password" autocomplete="current-password" required>
+              <button id="login-button" class="button button-primary auth-button" type="submit">دخول لوحة التحكم</button>
+            </form>
+            <p id="iframe-hint" class="iframe-hint" hidden></p>
+          </div>
+        </section>
+
+        <section id="dashboard-view" hidden aria-label="بيانات الإدارة">
+          <div id="route-content"></div>
+        </section>
+      </main>
+    </section>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+    <aside id="details-drawer" class="details-drawer" aria-labelledby="drawer-title" aria-hidden="true" hidden>
+      <div class="drawer-header">
+        <div>
+          <p class="eyebrow">تفاصيل مصرح بها</p>
+          <h2 id="drawer-title">تفاصيل السجل</h2>
+        </div>
+        <button id="drawer-close" class="icon-button" type="button" aria-label="إغلاق التفاصيل">×</button>
+      </div>
+      <div id="drawer-content" class="drawer-content"></div>
+    </aside>
+  </div>
+
+  <script type="module" src="/admin/admin.js?v=admin-ui-19"></script>
+</body>
+</html>
